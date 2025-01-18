@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal Entries</title>
+    <link rel="stylesheet" href="journal.css">
+    <script defer src="journal.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Journal Entries</h1>
+        <button onclick="sortEntries()">Sort by Date</button>
+        <ul id="journal-entries">
+            <li data-date="2023-10-01">
+                <strong>Date:</strong> 2023-10-01 <br>
+                <strong>Length:</strong> 120 words <br>
+                <p>Today was a great day...</p>
+            </li>
+            <li data-date="2023-09-25">
+                <strong>Date:</strong> 2023-09-25 <br>
+                <strong>Length:</strong> 200 words <br>
+                <p>I learned a lot about...</p>
+            </li>
+            <li data-date="2023-09-30">
+                <strong>Date:</strong> 2023-09-30 <br>
+                <strong>Length:</strong> 150 words <br>
+                <p>Had a productive meeting...</p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
