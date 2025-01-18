@@ -12,6 +12,18 @@ ul {
 .login {
     float: right
 }
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: left;
+    vertical-align: top;
+    resize: none;
+}
+    
   li {
     float: left;
   }
@@ -30,11 +42,17 @@ ul {
   }
 
   form {
-    text-align: center;
-    margin: 50px;
+    margin: 20px;
   }
 
   .submit{
-    
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
   }
-
+  #char-count {
+    display: block;
+    margin-top: 10px;
+  }

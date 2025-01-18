@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="entry.css" rel="stylesheet" type="text/css" />
+    <script defer src="entry.js"></script>
 </head>
 <body>
     <div>
@@ -19,9 +20,9 @@
     <div>
         <form>
         Journal Entry: <br>
-            <textarea rows="5" cols="40" spellcheck="true">
-                Today I...
-            </textarea>
+            <textarea rows="5" cols="40" spellcheck="true"></textarea>
+            <br>
+            <span id="char-count">Character count: 0</span>
             <br>
             <input class="submit" type="submit" value="Submit">
           </form>
