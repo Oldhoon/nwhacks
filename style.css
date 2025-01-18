@@ -28,3 +28,13 @@ ul {
   li a:hover {
     background-color: #111;
   }
+
+  form {
+    text-align: center;
+    margin: 50px;
+  }
+
+  .submit{
+    
+  }
+
