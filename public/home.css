@@ -47,3 +47,9 @@
   .btn-primary:hover {
     background-color: #00c6ff;
   }
+  
+.text-center {
+    text-align: center;
+    color: aquamarine;
+    font-family:dancing script;
+}
