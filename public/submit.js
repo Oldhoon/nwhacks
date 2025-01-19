@@ -15,18 +15,18 @@ function displaySentiment(score, mood) {
     const sentimentFace = document.getElementById('sentiment-face');
 
     if (score === 1) {
-        sentimentBar.style.background = 'green';
+        sentimentBar.style.background = 'red';
         sentimentFace.innerText = '😊';  // Happy face for score 1
     } else if (score === 0) {
         sentimentBar.style.background = 'yellow';
         sentimentFace.innerText = '😐';  // Neutral face for score 0
     } else if (score === -1) {
-        sentimentBar.style.background = 'red';
+        sentimentBar.style.background = 'green';
         sentimentFace.innerText = '😞';  // Sad face for score -1
     } else {
         // For cases where score is between -1 and 1, scale accordingly
         let position = ((score + 1) / 2) * 100;  // Normalize score to percentage
-        sentimentBar.style.background = `linear-gradient(to right, red ${position}%, yellow ${position}%, green)`;
+        sentimentBar.style.background = `linear-gradient(to right, green ${position}%, white ${position}%, white)`;
         sentimentFace.innerText = score > 0 ? '😊' : score < 0 ? '😞' : '😐';
     }
 }
