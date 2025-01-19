@@ -3,6 +3,17 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
+    "mongoose": "^8.9.5",
     "mysql2": "^3.12.0"
-  }
+  },
+  "name": "nwhacks2025",
+  "version": "1.0.0",
+  "description": "Hackathon Project",
+  "main": "entry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
