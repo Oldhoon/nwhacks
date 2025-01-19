@@ -53,3 +53,10 @@
     color: rgb(0, 0, 0);
     font-family:dancing script;
 }
+.mic {
+    width: 20px;
+    height: 20px;
+    vertical-align:middle;
+    border-radius: 50%;
+    
+}

@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentDateElement = document.getElementById('date');
     const today = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    currentDateElement.textContent = today.toLocaleDateString(undefined, options);
+    if (currentDateElement) {
+        currentDateElement.textContent = today.toLocaleDateString(undefined, options);
+    }
 
     textarea.addEventListener('input', function() {
         charCount.textContent = 'Character count: ' + textarea.value.length;
     });
-
-    
 
     // Speech-to-Text functionality
     const recordButton = document.getElementById('record-button');
