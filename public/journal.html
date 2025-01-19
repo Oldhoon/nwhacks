@@ -5,28 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal Entries</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="journal.css">
     <style>
-        th {
-            position: relative;
-            cursor: pointer;
-        }
-
-        th:hover::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background-color: #007bff;
-            border-radius: 2px;
-        }
-
-        .sort-indicator {
-            font-size: 0.9em;
-            margin-left: 5px;
-            color: gray;
+        .pagination {
+            justify-content: center;
         }
     </style>
 </head>
@@ -61,84 +42,88 @@
             <table class="table table-bordered table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col" onclick="sortTable(0)">Title<span class="sort-indicator" id="indicator-0"></span></th>
-                        <th scope="col" onclick="sortTable(1)">Date and Time<span class="sort-indicator" id="indicator-1"></span></th>
-                        <th scope="col" onclick="sortTable(2)">Mood<span class="sort-indicator" id="indicator-2"></span></th>
-                        <th scope="col" onclick="sortTable(3)">Score<span class="sort-indicator" id="indicator-3"></span></th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Date and Time</th>
+                        <th scope="col">Mood</th>
+                        <th scope="col">Score</th>
                     </tr>
                 </thead>
                 <tbody id="journal-entries">
-                    <tr>
-                        <td>Sample Title A</td>
-                        <td>2025-01-19 12:30 PM</td>
-                        <td>Happy</td>
-                        <td>8/10</td>
-                    </tr>
-                    <tr>
-                        <td>Sample Title B</td>
-                        <td>2025-01-18 10:15 AM</td>
-                        <td>Sad</td>
-                        <td>5/10</td>
-                    </tr>
-                    <tr>
-                        <td>Sample Title C</td>
-                        <td>2025-01-20 01:00 PM</td>
-                        <td>Neutral</td>
-                        <td>7/10</td>
-                    </tr>
+                    <!-- Table rows will be dynamically added here -->
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination" id="pagination">
+                <!-- Pagination buttons will be dynamically added here -->
+            </ul>
+        </nav>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript for Pagination -->
     <script>
-        let sortDirection = {};
+        const entries = [
+            { title: "Sample Title A", date: "2025-01-19 12:30 PM", mood: "Happy", score: "8/10" },
+            { title: "Sample Title B", date: "2025-01-18 10:15 AM", mood: "Sad", score: "5/10" },
+            { title: "Sample Title C", date: "2025-01-20 01:00 PM", mood: "Neutral", score: "7/10" },
+            { title: "Sample Title C", date: "2025-01-20 01:00 PM", mood: "Neutral", score: "7/10" },
+            { title: "Sample Title C", date: "2025-01-20 01:00 PM", mood: "Neutral", score: "7/10" },
+            { title: "Sample Title C", date: "2025-01-20 01:00 PM", mood: "Neutral", score: "7/10" },
+            { title: "Sample Title C", date: "2025-01-20 01:00 PM", mood: "Neutral", score: "7/10" },
 
-        function sortTable(columnIndex) {
-            const table = document.querySelector("table");
-            const tbody = table.querySelector("tbody");
-            const rows = Array.from(tbody.querySelectorAll("tr"));
-            const indicators = document.querySelectorAll(".sort-indicator");
+            // Add more entries as needed for testing
+        ];
 
-            // Clear all indicators first
-            indicators.forEach(indicator => (indicator.textContent = ""));
+        const rowsPerPage = 6;
+        let currentPage = 1;
 
-            // Determine sort direction
-            if (!sortDirection[columnIndex]) {
-                sortDirection[columnIndex] = "asc";
-            } else {
-                sortDirection[columnIndex] = sortDirection[columnIndex] === "asc" ? "desc" : "asc";
-            }
+        function displayEntries(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageEntries = entries.slice(start, end);
 
-            // Update indicator
-            const indicator = document.getElementById(`indicator-${columnIndex}`);
-            indicator.textContent = sortDirection[columnIndex] === "asc" ? "(ascending)" : "(descending)";
+            const tbody = document.getElementById("journal-entries");
+            tbody.innerHTML = ""; // Clear previous rows
 
-            // Sort rows
-            rows.sort((a, b) => {
-                const cellA = a.cells[columnIndex].textContent.trim();
-                const cellB = b.cells[columnIndex].textContent.trim();
-
-                if (columnIndex === 1) {
-                    const dateA = new Date(cellA);
-                    const dateB = new Date(cellB);
-                    return sortDirection[columnIndex] === "asc" ? dateA - dateB : dateB - dateA;
-                } else if (columnIndex === 3) {
-                    const scoreA = parseFloat(cellA.split("/")[0]);
-                    const scoreB = parseFloat(cellB.split("/")[0]);
-                    return sortDirection[columnIndex] === "asc" ? scoreA - scoreB : scoreB - scoreA;
-                } else {
-                    return sortDirection[columnIndex] === "asc"
-                        ? cellA.localeCompare(cellB)
-                        : cellB.localeCompare(cellA);
-                }
+            pageEntries.forEach(entry => {
+                const row = `<tr>
+                    <td>${entry.title}</td>
+                    <td>${entry.date}</td>
+                    <td>${entry.mood}</td>
+                    <td>${entry.score}</td>
+                </tr>`;
+                tbody.innerHTML += row;
             });
 
-            rows.forEach(row => tbody.appendChild(row));
+            updatePagination();
         }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(entries.length / rowsPerPage);
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = ""; // Clear previous pagination buttons
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement("li");
+                pageItem.className = `page-item ${i === currentPage ? "active" : ""}`;
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+                pagination.appendChild(pageItem);
+            }
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            displayEntries(page);
+        }
+
+        // Initialize the table with the first page of entries
+        displayEntries(currentPage);
     </script>
 </body>
 </html>
