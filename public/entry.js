@@ -12,7 +12,7 @@ function submitEntry() {
     const text = document.getElementById('journal-entry').value.trim(); // Get user input
     if (text) {
         localStorage.setItem('journalEntry', text); // Save text to localStorage
-        window.location.href = 'submission.html'; // Redirect to the submission page
+        window.location.href = 'submit2.html'; // Redirect to the submission page
     } else {
         alert('Please enter a journal entry before submitting!');
     }
