@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const charCount = document.getElementById('char-count');
 
     textarea.addEventListener('input', function() {
-        charCount.textContent = 'Character count : ${textarea.value.length}';
+        charCount.textContent = 'Character count: ' + textarea.value.length;
     });
 });
 
