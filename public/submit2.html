@@ -25,27 +25,35 @@
         </div>
     </nav>
 
-    <!-- Content -->
     <div class="container text-center mt-5 content">
         <h1 class="text-dark mb-4"><span id="journal-title">Your Journal Entry</span></h1>
-        <div>
+        <div class="position-relative p-4 bg-white rounded shadow-sm">
             <p class="journal-entry text-dark mt-3">
-                <span id="journal-text">
-                    Loading...
-                </span>
+                <span id="journal-text">Loading...</span>
             </p>
             <p class="score text-dark fs-5">Mood Score: <span id="score">...</span></p>
             <p class="score text-dark fs-5">Mood: <span id="mood">...</span></p>
-        </div>
 
-        <!-- Sentiment Bar -->
-        <div class="sentiment-container d-flex justify-content-center align-items-center mt-4">
-            <div id="sentiment-bar" class="sentiment-bar bg-primary rounded" style="width: 60%; height: 20px;"></div>
-            <div id="sentiment-face" class="sentiment-face ms-3 fs-3">😐</div>
+            <!-- Sentiment Bar -->
+            <div class="sentiment-container d-flex justify-content-center align-items-center mt-4">
+                <div id="sentiment-bar" class="sentiment-bar bg-primary rounded" style="width: 60%; height: 20px;"></div>
+                <div id="sentiment-face" class="sentiment-face ms-3 fs-3">😐</div>
+            </div>
+
+            <!-- Mood and Score Input Fields -->
+            <form id="mood-form" action="/submit-mood" method="POST" class="p-4 bg-white rounded shadow-sm gra mt-4">
+                <div class="mb-3">
+                    <label for="mood-input" class="form-label">Mood:</label>
+                    <input type="text" id="mood-input" name="mood" class="form-control" placeholder="Enter your mood" required>
+                </div>
+                <div class="mb-3">
+                    <label for="score-input" class="form-label">Mood Score:</label>
+                    <input type="number" id="score-input" name="score" class="form-control" min="1" max="10" placeholder="Enter mood score" required>
+                </div>
+                <button id="submit-button" class="btn btn-primary w-100" type="submit">Submit</button>
+            </form>
         </div>
     </div>
-
-    
 
     <script src="submit.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
