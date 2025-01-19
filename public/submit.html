@@ -9,15 +9,21 @@
 <body>
     <div class="navbar">
         <ul>
-            <li> <a href="" >Home</a></li>
-            <li> <a href="" >Journal</a></li>
+            <li> <a href="home.html" >Home</a></li>
+            <li> <a href="journal.html" >Journal</a></li>
             <li> <a href="" >Trends</a></li>
             <li class="signup"> <a href="signup.html" >Sign Up</a></li>
             <li class="login"> <a href="login.html" >Login</a></li>
-
         </ul>
     </div>
     <div>
+        <form id="journal-form" action="/journal" method="post">
+            <input type="hidden" id="userId" name="userId"> <!-- User ID will be set dynamically -->
+            <input type="hidden" id="hidden-journal-text" name="entry">
+            <input type="hidden" id="hidden-score" name="score">
+            <input type="hidden" id="hidden-mood" name="mood">
+            <input id="submit-button" class="submit" type="submit" value="Save Entry">
+        </form>
         <img class="gif" id="generated-gif" src="" alt="Generated GIF" style="display:none;">
         <p class="journal-entry">
             <span id="journal-text">
@@ -31,6 +37,13 @@
         </div>        
         <p class="mood">Mood: <span id="mood">...</span></p>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+            document.getElementById('userId').value = userId;
+        });
+    </script>
     <script src="submit.js"></script>
 </body> 
 </html>

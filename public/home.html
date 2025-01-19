@@ -9,7 +9,22 @@
 <body>
     <h1>Welcome to your home page</h1>
     <p>Click on the links below to navigate to the different pages</p>
-    <button id="newJournal" onclick="location.href='entry.html'">New Journal Entry</button>
-    <button id="Journal-entry" onclick="location.href='journal.html'">Journal Entries</button>
+    <button id="newJournal">New Journal Entry</button>
+    <button id="viewJournals">View Journals</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+
+            document.getElementById('newJournal').onclick = function() {
+                location.href = `entry.html?userId=${userId}`;
+            };
+
+            document.getElementById('viewJournals').onclick = function() {
+                location.href = `journal.html?userId=${userId}`;
+            };
+        });
+    </script>
 </body>
 </html>

@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal Entry</title>
     <link href="entry.css" rel="stylesheet" type="text/css" />
-    <script defer src="entry.js"></script>
 </head>
 <body>
-    <div>
-        <ul class="navbar">
+    <div class="navbar">
+        <ul>
             <li> <a href="home.html" >Home</a></li>
             <li> <a href="journal.html" >Journal</a></li>
             <li> <a href="" >Trends</a></li>
@@ -18,15 +17,33 @@
         </ul>
     </div>
     <div>
-        <form id="journal-form" action="submit.html" method="get">
-        Journal Entry: <br>
-            <textarea id="journal-entry" rows="5" cols="40" spellcheck="true"></textarea>
-            <br>
-            <span id="char-count">Character count: 0</span>
-            <br>
-            <input id="submit-button" class="submit" type="submit" value="Submit">
-          </form>
+        <form id="journal-form" action="/journal" method="post">
+            <input type="hidden" id="userId" name="userId"> <!-- User ID will be set dynamically -->
+            <input type="hidden" id="hidden-journal-text" name="entry">
+            <input type="hidden" id="hidden-score" name="score">
+            <input type="hidden" id="hidden-mood" name="mood">
+            <input id="submit-button" class="submit" type="submit" value="Save Entry">
+        </form>
+        <img class="gif" id="generated-gif" src="" alt="Generated GIF" style="display:none;">
+        <p class="journal-entry">
+            <span id="journal-text">
+                Loading...
+            </span>
+        </p>
+        <p class="score">Mood Score: <span id="score">...</span></p>
+        <div class="sentiment-container">
+            <div id="sentiment-bar" class="sentiment-bar"></div>
+            <div id="sentiment-face" class="sentiment-face">😐</div>
+        </div>        
+        <p class="mood">Mood: <span id="mood">...</span></p>
     </div>
-    <script src="entry.js"></script>
-</body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+            document.getElementById('userId').value = userId;
+        });
+    </script>
+    <script src="submit.js"></script>
+</body> 
 </html>

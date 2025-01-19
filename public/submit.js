@@ -1,8 +1,49 @@
-// Get the saved journal entry from localStorage
-const journalText = localStorage.getItem('journalEntry');
+document.addEventListener('DOMContentLoaded', function() {
+    const journalForm = document.getElementById('journal-form');
+    const journalTextElement = document.getElementById('journal-text');
+    const scoreElement = document.getElementById('score');
+    const moodElement = document.getElementById('mood');
 
-// Display the journal entry
-document.getElementById('journal-text').innerText = journalText || 'No journal entry found.';
+    // Retrieve the journal text from local storage
+    const journalText = localStorage.getItem('journalEntry');
+    journalTextElement.innerText = journalText || 'No journal entry found.';
+
+    journalForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        if (journalText) {
+            fetch('https://api.api-ninjas.com/v1/sentiment?text=' + encodeURIComponent(journalText), {
+                method: 'GET',
+                headers: {
+                    'X-Api-Key': 'Ufcc6nUJUgAygNrritjS0A==wi2jQWj4Lne3E4pB', // Replace with your API key
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+
+                // Assuming the API response has `score` and `sentiment` properties
+                const score = result.score;
+                const mood = result.sentiment;
+
+                // Call the displaySentiment function to update the UI with the score and mood
+                displaySentiment(score, mood);
+
+                // Set the values of the hidden input fields
+                document.getElementById('hidden-journal-text').value = journalText;
+                document.getElementById('hidden-score').value = score;
+                document.getElementById('hidden-mood').value = mood;
+
+                // Submit the form after updating the fields
+                journalForm.submit();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    });
+});
 
 // Function to display sentiment and mood
 function displaySentiment(score, mood) {
@@ -29,29 +70,4 @@ function displaySentiment(score, mood) {
         sentimentBar.style.background = `linear-gradient(to right, red ${position}%, yellow ${position}%, green)`;
         sentimentFace.innerText = score > 0 ? '😊' : score < 0 ? '😞' : '😐';
     }
-}
-
-// Send the text to the API and display the results
-if (journalText) {
-    fetch('https://api.api-ninjas.com/v1/sentiment?text=' + encodeURIComponent(journalText), {
-        method: 'GET',
-        headers: {
-            'X-Api-Key': 'Ufcc6nUJUgAygNrritjS0A==wi2jQWj4Lne3E4pB', // Replace with your API key
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(result => {
-        console.log(result);
-
-        // Assuming the API response has `score` and `sentiment` properties
-        const score = result.score;
-        const mood = result.sentiment;
-
-        // Call the displaySentiment function to update the UI with the score and mood
-        displaySentiment(score, mood);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
 }
