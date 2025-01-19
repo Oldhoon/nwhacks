@@ -11,17 +11,17 @@
   <section id="login" class="gradient-background vh-100 d-flex justify-content-center align-items-center">
     <div class="container col-xxl-4 px-4 py-5 bg-light rounded shadow">
       <h1 class="display-6 fw-bold text-center mb-4">Welcome Back</h1>
-      <form>
+      <form action="/login" method="POST">
         <div class="mb-3">
-          <label for="email" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+          <label for="uname" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="uname" name="uname" placeholder="name@example.com" required>
         </div>
         <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+          <label for="psw" class="form-label">Password</label>
+          <input type="password" class="form-control" id="psw" name="psw" placeholder="Enter your password" required>
         </div>
         <div class="d-grid">
-          <button type="submit" class="btn btn-primary btn-lg" onclick="window.location.href='entry2.html'">Login</button>
+          <button type="submit" class="btn btn-primary btn-lg">Login</button>
         </div>
       </form>
       <p class="text-center mt-3">Don't have an account? <a href="signup2.html">Sign Up</a></p>

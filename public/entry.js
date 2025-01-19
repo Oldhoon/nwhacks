@@ -20,6 +20,31 @@ function submitEntry() {
         alert('Please enter a journal entry before submitting!');
     }
 }
-
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch('/get-entries', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const entries = await response.json();
+  
+      const tableBody = document.querySelector('#journal-entries tbody');
+      entries.forEach((entry) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.title}</td>
+          <td>${new Date(entry.date).toLocaleString()}</td>
+          <td>${entry.mood}</td>
+          <td>${entry.score}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    } catch (err) {
+      console.error('Error fetching entries:', err);
+    }
+  });
+  
 // Attach the event listener to the submit button
 document.getElementById('submit-button').addEventListener('click', submitEntry);
