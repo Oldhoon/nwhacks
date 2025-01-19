@@ -72,25 +72,42 @@ textarea {
 }
 
 .sentiment-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 20px;
-    
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .sentiment-bar {
-    border: 1px black;
+    flex: 1;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.sentiment-face {
+    font-size: 24px;
+}
+.sentiment-bar-container {
+    width: 100px; /* Adjust the width of the container */
+    height: 20px;
+    background-color: black; /* The empty portion of the bar */
+    border-radius: 10px;
+    overflow: hidden; /* Ensures the green bar stays within bounds */
+    position: relative;
+}
+
+.sentiment-bar {
+    height: 100%;
+    background-color: green; /* The green portion of the bar */
+    width: 0%; /* Initially empty */
+    border-radius: 10px; /* Rounds the edges of the green bar */
+    transition: width 0.5s ease; /* Smooth transition when the width changes */
 }
 
 .sentiment-face {
     font-size: 2rem;
-    color: white;
-}
-
-.content {
-    background-color: white; /* White background */
-    border-radius: 10px; /* Rounded corners */
-    padding: 20px; /* Add spacing inside the container */
-    
-}
-.mic {
-    
 }
