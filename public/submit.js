@@ -1,6 +1,9 @@
 // Get the saved journal entry from localStorage
+const journalTitle = localStorage.getItem('journalTitle');
 const journalText = localStorage.getItem('journalEntry');
 
+//Display the journal title
+document.getElementById('journal-title').innerText = journalTitle || 'No journal title found.';
 // Display the journal entry
 document.getElementById('journal-text').innerText = journalText || 'No journal entry found.';
 

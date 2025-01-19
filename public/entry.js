@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const titlearea = document.getElementById('journal-title');
     const textarea = document.getElementById('journal-entry');
     const charCount = document.getElementById('char-count');
 
@@ -9,8 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to handle journal submission
 function submitEntry() {
+    const title = document.getElementById('journal-title').value.trim();
     const text = document.getElementById('journal-entry').value.trim(); // Get user input
     if (text) {
+        localStorage.setItem('journalTitle', title); // Save title to localStorage
         localStorage.setItem('journalEntry', text); // Save text to localStorage
         window.location.href = 'submit2.html'; // Redirect to the submission page
     } else {
