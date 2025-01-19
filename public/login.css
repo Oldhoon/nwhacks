@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+}
+
+.center-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 400px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.container label {
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #573b8a;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #6d44b8;
+}
+
+/* Styling for options below the button */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.form-options label {
+  font-size: 14px;
+  color: #000;
+  display: flex;
+  align-items: center;
+}
+
+.form-options .sign-up {
+  font-size: 14px;
+  text-decoration: none;
+  color: #573b8a;
+  background: #f1f1f1;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.form-options .sign-up:hover {
+  background: #ddd;
+}
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between text and checkbox */
+}
+
+.remember-me label {
+  font-size: 14px;
+  color: #000;
+}
+
+.remember-me input {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.form-options .sign-up {
+  font-size: 14px;
+  text-decoration: none;
+  color: #573b8a;
+  background: #f1f1f1;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.form-options .sign-up:hover {
+  background: #ddd;
+}
