@@ -137,37 +137,44 @@ app.get('/get-entries', authenticateToken, async (req, res) => {
 //     const { title, entry } = req.body;
 
 //     if (!title || !entry) {
-//         return res.status(400).json({ message: 'All fields are required.' });
+//         return res.status(400).json({ message: 'Title and entry are required.' });
 //     }
 
 //     try {
-//         // Call the sentiment analysis API
-//         const sentimentResponse = await axios.post('https://api.api-ninjas.com/v1/sentiment', {
-//             text: entry,
+//         // Make a GET request to Ninja API with text as a query parameter
+//         const response = await axios.get('https://api.api-ninjas.com/v1/sentiment', {
+//             params: { text: entry },
+//             headers: {
+//                 'X-Api-Key': process.env.NINJA_API_KEY || 'iboZzQ4aUtomq8JZ1HdIoQ==YmcHY45UjYZouFys',
+//             },
 //         });
 
-//         const { mood, score } = sentimentResponse.data;
+//         const { sentiment, score } = response.data || {};
+//         if (!sentiment || score === undefined) {
+//             throw new Error('Invalid response from sentiment API.');
+//         }
 
-//         // Save to MongoDB
+//         // Save the entry with sentiment analysis results
 //         const newEntry = new Journal({
-//             userId: req.user.userId, // Authenticated user ID
+//             userId: req.user.userId,
 //             title,
 //             entry,
-//             mood,
+//             mood: sentiment,
 //             score,
 //             date: new Date(),
 //         });
 
 //         await newEntry.save();
-//         console.log('Journal entry with sentiment saved:', newEntry);
-
-//         res.redirect('/journal.html'); // Redirect after saving
+//         res.redirect('/journal.html');
 //     } catch (err) {
-//         console.error('Error processing journal entry:', err);
-//         res.status(500).json({ message: 'Error saving journal entry.' });
+//         console.error('Error processing journal entry:', {
+//             message: err.message,
+//             responseData: err.response?.data,
+//             responseStatus: err.response?.status,
+//         });
+//         res.status(500).json({ message: 'Error saving journal entry.', error: err.message });
 //     }
 // });
-
 app.post('/submit-entry', authenticateToken, async (req, res) => {
     const { title, entry } = req.body;
 
@@ -176,7 +183,7 @@ app.post('/submit-entry', authenticateToken, async (req, res) => {
     }
 
     try {
-        // Make a GET request to Ninja API with text as a query parameter
+        // Perform sentiment analysis
         const response = await axios.get('https://api.api-ninjas.com/v1/sentiment', {
             params: { text: entry },
             headers: {
@@ -189,7 +196,7 @@ app.post('/submit-entry', authenticateToken, async (req, res) => {
             throw new Error('Invalid response from sentiment API.');
         }
 
-        // Save the entry with sentiment analysis results
+        // Save the journal entry to MongoDB
         const newEntry = new Journal({
             userId: req.user.userId,
             title,
@@ -199,18 +206,30 @@ app.post('/submit-entry', authenticateToken, async (req, res) => {
             date: new Date(),
         });
 
-        await newEntry.save();
-        res.redirect('/journal.html');
+        const savedEntry = await newEntry.save();
+
+        // Redirect to `submit2.html` with the saved entry ID
+        res.redirect(`/submit2.html?entryId=${savedEntry._id}`);
     } catch (err) {
-        console.error('Error processing journal entry:', {
-            message: err.message,
-            responseData: err.response?.data,
-            responseStatus: err.response?.status,
-        });
+        console.error('Error processing journal entry:', err);
         res.status(500).json({ message: 'Error saving journal entry.', error: err.message });
     }
 });
 
+app.get('/get-entry/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const entry = await Journal.findById(id);
+        if (!entry) {
+            return res.status(404).json({ message: 'Journal entry not found.' });
+        }
+        res.json(entry);
+    } catch (err) {
+        console.error('Error fetching journal entry:', err);
+        res.status(500).json({ message: 'Error fetching journal entry.', error: err.message });
+    }
+});
 
 app.post('/submit-mood', authenticateToken, async (req, res) => {
     const { mood, score } = req.body;

@@ -58,3 +58,25 @@ if (journalText) {
         console.error('Error:', error);
     });
 }
+
+// Sentiment face mapping based on mood score
+function getSentimentFace(score) {
+    if (score >= 0.8) return '😄'; // Highly positive
+    if (score >= 0.4) return '🙂'; // Positive
+    if (score >= -0.4) return '😐'; // Neutral
+    if (score >= -0.8) return '☹️'; // Negative
+    return '😢'; // Highly negative
+}
+
+// Adjust sentiment bar width and color dynamically
+function adjustSentimentBar(score) {
+    const bar = document.getElementById('sentiment-bar');
+    const face = document.getElementById('sentiment-face');
+
+    // Convert score (-1 to 1) into a percentage (0% to 100%)
+    const barWidth = Math.round((score + 1) * 50); // Score range: -1 to 1 -> Width: 0% to 100%
+    bar.style.width = `${barWidth}%`;
+
+    // Update the sentiment face based on the score
+    face.textContent = getSentimentFace(score);
+}

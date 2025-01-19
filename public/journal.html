@@ -97,10 +97,10 @@
             entries.forEach(entry => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${entry.title || 'N/A'}</td>
-                    <td>${entry.entry || 'N/A'}</td>
-                    <td>${entry.mood || 'N/A'}</td>
-                    <td>${entry.score !== undefined ? entry.score : 'N/A'}</td>
+                    <td>${entry.title}</td>
+                    <td>${entry.entry}</td>
+                    <td>${entry.mood}</td>
+                    <td>${entry.score}</td>
                     <td>${new Date(entry.date).toLocaleString()}</td>
                 `;
                 tableBody.appendChild(row);
