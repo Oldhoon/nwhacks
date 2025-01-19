@@ -44,10 +44,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="home.html">Home</a>
+                        <a class="nav-link" href="entry2.html">Add a New Entry</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="journal.html">Journal</a>
+                        <a class="nav-link active" href="journal.html">Journal</a>
                     </li>
                 </ul>
             </div>
@@ -84,35 +84,34 @@
     <!-- Fetch and Display Entries -->
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('/get-entries', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            try {
+                const response = await fetch('/get-entries', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (response.ok) {
+                    const entries = await response.json();
+                    const tableBody = document.getElementById('journal-entries');
+
+                    entries.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${entry.title}</td>
+                            <td>${entry.entry}</td>
+                            <td>${entry.mood}</td>
+                            <td>${entry.score}</td>
+                            <td>${new Date(entry.date).toLocaleString()}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error('Failed to fetch journal entries.');
+                }
+            } catch (err) {
+                console.error('Error fetching journal entries:', err);
+            }
         });
-
-        if (response.ok) {
-            const entries = await response.json();
-            const tableBody = document.getElementById('journal-entries');
-
-            entries.forEach(entry => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${entry.title}</td>
-                    <td>${entry.entry}</td>
-                    <td>${entry.mood}</td>
-                    <td>${entry.score}</td>
-                    <td>${new Date(entry.date).toLocaleString()}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        } else {
-            console.error('Failed to fetch journal entries.');
-        }
-    } catch (err) {
-        console.error('Error fetching journal entries:', err);
-    }
-});
-
     </script>
 </body>
 </html>
