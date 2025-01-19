@@ -61,7 +61,7 @@ textarea {
     background-color: #111;
   }
 
-  .sentiment-container {
+  /* .sentiment-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -81,4 +81,28 @@ textarea {
     font-size: 2rem;
     margin-top: 10px;
     transition: font-size 0.3s ease;
+} */
+
+.gradient-background {
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    min-height: 100vh;
+    color: white;
 }
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.sentiment-container {
+    margin-top: 20px;
+}
+
+.sentiment-bar {
+    background-color: #4facfe;
+}
+
+.sentiment-face {
+    font-size: 2rem;
+    color: white;
+}
+

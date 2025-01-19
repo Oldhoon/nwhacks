@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal Entry - MoodTracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="entry.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="gradient-background">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">MoodTracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="journal.html">Journal</a></li>
+                    <li class="nav-item"><a class="nav-link" href="signup.html">Sign Up</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container text-center mt-5">
+        <h1 class="text-dark mb-4">Your Journal Entry</h1>
+        <div>
+            <img class="gif rounded" id="generated-gif" src="" alt="Generated GIF" style="display:none; width: 300px;">
+            <p class="journal-entry text-dark mt-3">
+                <span id="journal-text">
+                    Loading...
+                </span>
+            </p>
+            <p class="score text-dark fs-5">Mood Score: <span id="score">...</span></p>
+        </div>
+
+        <!-- Sentiment Bar -->
+        <div class="sentiment-container d-flex justify-content-center align-items-center mt-4">
+            <div id="sentiment-bar" class="sentiment-bar bg-primary rounded" style="width: 60%; height: 20px;"></div>
+            <div id="sentiment-face" class="sentiment-face ms-3 fs-3">😐</div>
+        </div>
+    </div>
+
+    <script src="submit.js"></script>
+</body> 
+</html>
