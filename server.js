@@ -40,6 +40,25 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+// handle login form submission
+app.post('/login', async (req, res) => {
+    const { uname, psw } = req.body;
+
+    try {
+        const user = await User.findOne({ email: uname, password: psw });
+        if (user) {
+            console.log('User logged in successfully:', user);
+            res.redirect('/home.html'); // Redirect to home.html after successful login
+        } else {
+            console.log('Invalid email or password.');
+            
+        }
+     } catch (err) {
+            console.error('Error logging in:', err);
+            res.send('Error logging in.');
+        }
+ });
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
