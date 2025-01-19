@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal Entry</title>
     <link href="entry.css" rel="stylesheet" type="text/css" />
-    <script defer src="entry.js"></script>
 </head>
 <body>
-    <div>
-        <ul class="navbar">
+    <div class="navbar">
+        <ul>
             <li> <a href="home.html" >Home</a></li>
             <li> <a href="journal.html" >Journal</a></li>
             <li class="signup"> <a href="signup.html" >Sign Up</a></li>
@@ -26,6 +25,13 @@
             <input id="submit-button" class="submit" type="submit" value="Submit">
           </form>
     </div>
-    <script src="entry.js"></script>
-</body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+            document.getElementById('userId').value = userId;
+        });
+    </script>
+    <script src="submit.js"></script>
+</body> 
 </html>

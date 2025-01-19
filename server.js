@@ -93,10 +93,22 @@ mongoose.connect(uri)
     .then(() => console.log("Connected to MongoDB Atlas"))
     .catch((err) => console.error("Error connecting to MongoDB:", err));
 
+// Create a schema and model for journal entries
+const journalSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    entry: String,
+    score: Number,
+    mood: String,
+    date: { type: Date, default: Date.now }
+});
+
+const Journal = mongoose.model('Journal', journalSchema);
+
 // Create a schema and model for user data
 const userSchema = new mongoose.Schema({
     email: String,
-    password: String
+    password: String,
+    journals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Journal' }]
 });
 const User = mongoose.model('User', userSchema);
 
@@ -132,7 +144,7 @@ app.post('/login', async (req, res) => {
         const user = await User.findOne({ email: uname });
         if (user && await bcrypt.compare(psw, user.password)) {
             console.log('User logged in successfully:', user);
-            res.redirect('/home.html'); // Redirect to home.html after successful login
+            res.redirect('/home.html?userId=${user._id}'); // Render home page with user ID
         } else {
             console.log('Invalid email or password.');
             res.status(401).send('Invalid email or password.');
