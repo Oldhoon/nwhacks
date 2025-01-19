@@ -21,22 +21,23 @@ const User = mongoose.model('User', userSchema);
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle form submission
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     const newUser = new User({
         email: req.body.email,
         password: req.body.psw
     });
 
-    newUser.save((err) => {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send('Successfully signed up!');
-        }
-    });
+    try {
+        await newUser.save();
+        console.log('User saved successfully:', newUser);
+        res.redirect('/login.html'); // Redirect to login.html after successful signup
+    } catch (err) {
+        console.error('Error saving user:', err);
+        res.send('Error saving user.');
+    }
 });
 
 app.listen(port, () => {
