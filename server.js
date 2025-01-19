@@ -6,7 +6,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
-
+const axios = require('axios');
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -134,47 +134,83 @@ app.get('/get-entries', authenticateToken, async (req, res) => {
 
 // Submit Journal Entry
 // app.post('/submit-entry', authenticateToken, async (req, res) => {
-//     const { title, entry, score, mood } = req.body;
-//     const userId = req.user.userId;
+//     const { title, entry } = req.body;
 
-//     if (!title || !entry || !score || !mood) {
+//     if (!title || !entry) {
 //         return res.status(400).json({ message: 'All fields are required.' });
 //     }
 
 //     try {
-//         const newEntry = new Journal({ userId, title, entry, score, mood });
+//         // Call the sentiment analysis API
+//         const sentimentResponse = await axios.post('https://api.api-ninjas.com/v1/sentiment', {
+//             text: entry,
+//         });
+
+//         const { mood, score } = sentimentResponse.data;
+
+//         // Save to MongoDB
+//         const newEntry = new Journal({
+//             userId: req.user.userId, // Authenticated user ID
+//             title,
+//             entry,
+//             mood,
+//             score,
+//             date: new Date(),
+//         });
+
 //         await newEntry.save();
-//         console.log('Journal entry saved successfully:', newEntry);
-//         res.status(201).json({ message: 'Journal entry saved successfully.' });
+//         console.log('Journal entry with sentiment saved:', newEntry);
+
+//         res.redirect('/journal.html'); // Redirect after saving
 //     } catch (err) {
-//         console.error('Error saving journal entry:', err);
-//         res.status(500).send('Error saving journal entry.');
+//         console.error('Error processing journal entry:', err);
+//         res.status(500).json({ message: 'Error saving journal entry.' });
 //     }
 // });
+
 app.post('/submit-entry', authenticateToken, async (req, res) => {
     const { title, entry } = req.body;
 
     if (!title || !entry) {
-        return res.status(400).json({ message: 'All fields are required.' });
+        return res.status(400).json({ message: 'Title and entry are required.' });
     }
 
     try {
+        // Make a GET request to Ninja API with text as a query parameter
+        const response = await axios.get('https://api.api-ninjas.com/v1/sentiment', {
+            params: { text: entry },
+            headers: {
+                'X-Api-Key': process.env.NINJA_API_KEY || 'iboZzQ4aUtomq8JZ1HdIoQ==YmcHY45UjYZouFys',
+            },
+        });
+
+        const { sentiment, score } = response.data || {};
+        if (!sentiment || score === undefined) {
+            throw new Error('Invalid response from sentiment API.');
+        }
+
+        // Save the entry with sentiment analysis results
         const newEntry = new Journal({
-            userId: req.user.userId, // Assuming token authentication
+            userId: req.user.userId,
             title,
             entry,
+            mood: sentiment,
+            score,
             date: new Date(),
         });
 
         await newEntry.save();
-        console.log('Journal entry saved:', newEntry);
-
-        res.redirect('/entry2.html'); // Redirect to the journal page after submission
+        res.redirect('/journal.html');
     } catch (err) {
-        console.error('Error saving journal entry:', err);
-        res.status(500).json({ message: 'Error saving journal entry.' });
+        console.error('Error processing journal entry:', {
+            message: err.message,
+            responseData: err.response?.data,
+            responseStatus: err.response?.status,
+        });
+        res.status(500).json({ message: 'Error saving journal entry.', error: err.message });
     }
 });
+
 
 app.post('/submit-mood', authenticateToken, async (req, res) => {
     const { mood, score } = req.body;
