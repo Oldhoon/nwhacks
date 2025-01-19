@@ -266,6 +266,10 @@ app.post('/logout', (req, res) => {
     res.redirect('/login2.html');
 });
 
+app.get('/', (req, res) => {
+    res.redirect('/home.html');
+});
+
 // Start the Server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
