@@ -11,8 +11,13 @@
     <div class="container">
         <h1>Journal Entries</h1>
         <button onclick="sortEntries()">Sort by Date</button>
-
-       
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const userId = urlParams.get('userId');
+                console.log('User ID:', userId); // Use the userId as needed
+            });
+        </script>
     </div>
 </body>
 </html>
