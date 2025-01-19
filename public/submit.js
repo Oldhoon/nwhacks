@@ -59,37 +59,24 @@ if (journalText) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const hiddenScoreInput = document.getElementById('hidden-score');
-    const hiddenMoodInput = document.getElementById('hidden-mood');
-    const journalForm = document.getElementById('journal-form');
+// Sentiment face mapping based on mood score
+function getSentimentFace(score) {
+    if (score >= 0.8) return '😄'; // Highly positive
+    if (score >= 0.4) return '🙂'; // Positive
+    if (score >= -0.4) return '😐'; // Neutral
+    if (score >= -0.8) return '☹️'; // Negative
+    return '😢'; // Highly negative
+}
 
-    //set values of hidden inputs
-    hiddenScoreInput.value = score;
-    hiddenMoodInput.value = mood;
+// Adjust sentiment bar width and color dynamically
+function adjustSentimentBar(score) {
+    const bar = document.getElementById('sentiment-bar');
+    const face = document.getElementById('sentiment-face');
 
-    // Add an event listener to the form submit event
-    journalForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
+    // Convert score (-1 to 1) into a percentage (0% to 100%)
+    const barWidth = Math.round((score + 1) * 50); // Score range: -1 to 1 -> Width: 0% to 100%
+    bar.style.width = `${barWidth}%`;
 
-        // Update the hidden input values before submitting the form
-        hiddenScoreInput.value = document.getElementById('score').innerText;
-        hiddenMoodInput.value = document.getElementById('mood').innerText;
-
-        // Submit the form data using fetch
-        fetch(journalForm.action, {
-            method: journalForm.method,
-            body: new FormData(journalForm)
-        }).then(response => {
-            if (response.ok) {
-                // Redirect to the journal page after successful submission
-                window.location.href = 'journal.html';
-            } else {
-                alert('Error saving journal entry.');
-            }
-        }).catch(error => {
-            console.error('Error:', error);
-            alert('Error saving journal entry.');
-        });
-    });
-});
+    // Update the sentiment face based on the score
+    face.textContent = getSentimentFace(score);
+}

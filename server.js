@@ -6,7 +6,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
-
+const axios = require('axios');
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -134,77 +134,130 @@ app.get('/get-entries', authenticateToken, async (req, res) => {
 
 // Submit Journal Entry
 // app.post('/submit-entry', authenticateToken, async (req, res) => {
-//     const { title, entry, score, mood } = req.body;
-//     const userId = req.user.userId;
+//     const { title, entry } = req.body;
 
-//     if (!title || !entry || !score || !mood) {
-//         return res.status(400).json({ message: 'All fields are required.' });
+//     if (!title || !entry) {
+//         return res.status(400).json({ message: 'Title and entry are required.' });
 //     }
 
 //     try {
-//         const newEntry = new Journal({ userId, title, entry, score, mood });
+//         // Make a GET request to Ninja API with text as a query parameter
+//         const response = await axios.get('https://api.api-ninjas.com/v1/sentiment', {
+//             params: { text: entry },
+//             headers: {
+//                 'X-Api-Key': process.env.NINJA_API_KEY || 'iboZzQ4aUtomq8JZ1HdIoQ==YmcHY45UjYZouFys',
+//             },
+//         });
+
+//         const { sentiment, score } = response.data || {};
+//         if (!sentiment || score === undefined) {
+//             throw new Error('Invalid response from sentiment API.');
+//         }
+
+//         // Save the entry with sentiment analysis results
+//         const newEntry = new Journal({
+//             userId: req.user.userId,
+//             title,
+//             entry,
+//             mood: sentiment,
+//             score,
+//             date: new Date(),
+//         });
+
 //         await newEntry.save();
-//         console.log('Journal entry saved successfully:', newEntry);
-//         res.status(201).json({ message: 'Journal entry saved successfully.' });
+//         res.redirect('/journal.html');
 //     } catch (err) {
-//         console.error('Error saving journal entry:', err);
-//         res.status(500).send('Error saving journal entry.');
+//         console.error('Error processing journal entry:', {
+//             message: err.message,
+//             responseData: err.response?.data,
+//             responseStatus: err.response?.status,
+//         });
+//         res.status(500).json({ message: 'Error saving journal entry.', error: err.message });
 //     }
 // });
 app.post('/submit-entry', authenticateToken, async (req, res) => {
-    const { title, entry, score, mood } = req.body;
+    const { title, entry } = req.body;
 
-    if (!title || !entry || !score || !mood) {
-        return res.status(400).json({ message: 'All fields are required.' });
+    if (!title || !entry) {
+        return res.status(400).json({ message: 'Title and entry are required.' });
     }
 
     try {
+        // Perform sentiment analysis
+        const response = await axios.get('https://api.api-ninjas.com/v1/sentiment', {
+            params: { text: entry },
+            headers: {
+                'X-Api-Key': process.env.NINJA_API_KEY || 'iboZzQ4aUtomq8JZ1HdIoQ==YmcHY45UjYZouFys',
+            },
+        });
+
+        const { sentiment, score } = response.data || {};
+        if (!sentiment || score === undefined) {
+            throw new Error('Invalid response from sentiment API.');
+        }
+
+        // Save the journal entry to MongoDB
         const newEntry = new Journal({
-            userId: req.user.userId, // Assuming token authentication
+            userId: req.user.userId,
             title,
             entry,
+            mood: sentiment,
             score,
-            mood,
             date: new Date(),
         });
 
-        await newEntry.save();
-        console.log('Journal entry saved:', newEntry);
+        const savedEntry = await newEntry.save();
 
-        res.redirect('/journal.html'); // Redirect to the journal page after submission
+        // Redirect to `submit2.html` with the saved entry ID
+        res.redirect(`/submit2.html?entryId=${savedEntry._id}`);
     } catch (err) {
-        console.error('Error saving journal entry:', err);
-        res.status(500).json({ message: 'Error saving journal entry.' });
+        console.error('Error processing journal entry:', err);
+        res.status(500).json({ message: 'Error saving journal entry.', error: err.message });
     }
 });
 
-// app.post('/submit-mood', authenticateToken, async (req, res) => {
-//     const { mood, score } = req.body;
+app.get('/get-entry/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
 
-//     if (!mood || score === undefined) {
-//         return res.status(400).json({ message: 'Mood and score are required.' });
-//     }
+    try {
+        const entry = await Journal.findById(id);
+        if (!entry) {
+            return res.status(404).json({ message: 'Journal entry not found.' });
+        }
+        res.json(entry);
+    } catch (err) {
+        console.error('Error fetching journal entry:', err);
+        res.status(500).json({ message: 'Error fetching journal entry.', error: err.message });
+    }
+});
 
-//     try {
-//         // Save mood and score to the database
-//         const newEntry = new Journal({
-//             userId: req.user.userId, // Authenticated user ID
-//             mood,
-//             score,
-//             date: new Date(), // Automatically add the current date
-//         });
+app.post('/submit-mood', authenticateToken, async (req, res) => {
+    const { mood, score } = req.body;
 
-//         await newEntry.save(); // Save the new entry to MongoDB
+    if (!mood || score === undefined) {
+        return res.status(400).json({ message: 'Mood and score are required.' });
+    }
 
-//         console.log('Mood and score saved successfully:', newEntry);
+    try {
+        // Save mood and score to the database
+        const newEntry = new Journal({
+            userId: req.user.userId, // Authenticated user ID
+            mood,
+            score,
+            date: new Date(), // Automatically add the current date
+        });
 
-//         // Redirect to journal.html after saving
-//         res.redirect('/journal.html');
-//     } catch (err) {
-//         console.error('Error saving mood and score:', err);
-//         res.status(500).json({ message: 'Error saving mood and score.' });
-//     }
-// });
+        await newEntry.save(); // Save the new entry to MongoDB
+
+        console.log('Mood and score saved successfully:', newEntry);
+
+        // Redirect to journal.html after saving
+        res.redirect('/journal.html');
+    } catch (err) {
+        console.error('Error saving mood and score:', err);
+        res.status(500).json({ message: 'Error saving mood and score.' });
+    }
+});
 
 
 // Logout

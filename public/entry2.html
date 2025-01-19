@@ -29,61 +29,39 @@
             </div>
         </div>
     </nav>
-    <div class = "date">
-        <h4 id ="date" class= "text-center"></h4>
-    </div>
-    <!-- Main Content -->
+
     <div class="container mt-5">
         <h2 class="text-center mb-4 grad">Journal Entry</h2>
         
-        <form id="journal-form" action="submit2.html" method="get" class="p-4 bg-white rounded shadow-sm gra">
+        <!-- Updated Form -->
+        <form id="journal-form" action="/submit-entry" method="POST" class="p-4 bg-white rounded shadow-sm gra">
             <div class="mb-3">
-                <div class="mb-3">
-                    <label for="journal-title" class="form-label">Title:</label>
-                    <input type="text" id="journal-title" class="form-control" name="title" placeholder="Enter your journal title" required>
-                </div>
+                <label for="journal-title" class="form-label">Title:</label>
+                <input type="text" id="journal-title" class="form-control" name="title" placeholder="Enter your journal title" required>
+            </div>
+            <div class="mb-3">
                 <label for="journal-entry" class="form-label">Write your journal entry:</label>
-                <textarea id="journal-entry" class="form-control" rows="5" spellcheck="true" required></textarea>
+                <textarea id="journal-entry" class="form-control" name="entry" rows="5" spellcheck="true" required></textarea>
             </div>
             <div class="mb-3">
                 <span id="char-count" class="text-muted">Character count: 0</span>
             </div>
             <button id="submit-button" class="btn btn-primary w-100" type="submit">Submit</button>
         </form>
-        <button id="record-button" class="btn btn-secondary w-100 mt-3">Start Recording</button>
     </div>
-    <!-- <div class="container mt-5">
-        <h3 class="text-center mb-3">Your Journal Entries</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Entry</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody id="journal-entries">
-                <!-- Entries will be dynamically added here -->
-            <!-- </tbody>
-        </table>
-    </div>
-    <form id="journal-form" action="/submit-entry" method="POST" class="p-4 bg-white rounded shadow-sm gra">
-        <div class="mb-3">
-            <label for="journal-title" class="form-label">Title:</label>
-            <input type="text" id="journal-title" class="form-control" name="title" placeholder="Enter your journal title" required>
-        </div>
-        <div class="mb-3">
-            <label for="journal-entry" class="form-label">Write your journal entry:</label>
-            <textarea id="journal-entry" class="form-control" name="entry" rows="5" spellcheck="true" required></textarea>
-        </div>
-        <button id="submit-button" class="btn btn-primary w-100" type="submit">Submit</button>
-    </form> -->
-    
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
-    <script src="entry.js">
+
+    <!-- Character Count Logic -->
+    <script>
+        const journalEntry = document.getElementById('journal-entry');
+        const charCount = document.getElementById('char-count');
+
+        journalEntry.addEventListener('input', () => {
+            charCount.textContent = `Character count: ${journalEntry.value.length}`;
+        });
     </script>
-    
 </body>
 </html>

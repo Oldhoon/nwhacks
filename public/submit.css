@@ -98,4 +98,24 @@ p.journal-entry, p.score, p.mood {
 .sentiment-face {
     font-size: 24px;
 }
+.sentiment-bar-container {
+    width: 200px; /* Adjust the width of the container */
+    height: 20px;
+    background-color: black; /* The empty portion of the bar */
+    border-radius: 10px;
+    overflow: hidden; /* Ensures the green bar stays within bounds */
+    position: relative;
+}
+
+.sentiment-bar {
+    height: 100%;
+    background-color: green; /* The green portion of the bar */
+    width: 0%; /* Initially empty */
+    border-radius: 10px; /* Rounds the edges of the green bar */
+    transition: width 0.5s ease; /* Smooth transition when the width changes */
+}
+
+.sentiment-face {
+    font-size: 2rem;
+}
 
