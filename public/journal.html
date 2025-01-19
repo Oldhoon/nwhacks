@@ -10,25 +10,20 @@
             justify-content: center;
         }
 
-        /* Custom context menu styles */
-        .context-menu {
-            display: none;
-            position: absolute;
-            background-color: white;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .context-menu-item {
-            padding: 8px 12px;
+        .pagination li {
             cursor: pointer;
         }
 
-        .context-menu-item:hover {
-            background-color: #f1f1f1;
+        th {
+            cursor: pointer;
+        }
+
+        th.sorted-asc::after {
+            content: " ▲";
+        }
+
+        th.sorted-desc::after {
+            content: " ▼";
         }
     </style>
 </head>
@@ -63,11 +58,11 @@
             <table class="table table-bordered table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col">Title</th>
-                        <th scope="col">Entry</th>
-                        <th scope="col">Mood</th>
-                        <th scope="col">Score</th>
-                        <th scope="col">Date and Time</th>
+                        <th scope="col" data-key="title">Title</th>
+                        <th scope="col" data-key="entry">Entry</th>
+                        <th scope="col" data-key="mood">Mood</th>
+                        <th scope="col" data-key="score">Score</th>
+                        <th scope="col" data-key="date">Date and Time</th>
                     </tr>
                 </thead>
                 <tbody id="journal-entries">
@@ -75,6 +70,11 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination" id="pagination"></ul>
+        </nav>
     </div>
 
     <!-- Bootstrap JS -->
@@ -84,6 +84,12 @@
     <!-- Fetch and Display Entries -->
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            const rowsPerPage = 6; // Maximum rows per page
+            let currentPage = 1;
+            let entries = [];
+            let sortDirection = "asc"; // Default sort direction
+            let sortKey = ""; // Current column being sorted
+
             try {
                 const response = await fetch('/get-entries', {
                     method: 'GET',
@@ -91,25 +97,111 @@
                 });
 
                 if (response.ok) {
-                    const entries = await response.json();
-                    const tableBody = document.getElementById('journal-entries');
-
-                    entries.forEach(entry => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${entry.title}</td>
-                            <td>${entry.entry}</td>
-                            <td>${entry.mood}</td>
-                            <td>${entry.score}</td>
-                            <td>${new Date(entry.date).toLocaleString()}</td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
+                    entries = await response.json();
+                    renderTable(entries, currentPage, rowsPerPage);
+                    renderPagination(entries, rowsPerPage);
+                    enableSorting();
                 } else {
                     console.error('Failed to fetch journal entries.');
                 }
             } catch (err) {
                 console.error('Error fetching journal entries:', err);
+            }
+
+            // Function to render table rows for the current page
+            function renderTable(data, page, rowsPerPage) {
+                const tableBody = document.getElementById('journal-entries');
+                tableBody.innerHTML = ''; // Clear the table
+
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const paginatedData = data.slice(start, end);
+
+                paginatedData.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${entry.title}</td>
+                        <td>${entry.entry}</td>
+                        <td>${entry.mood}</td>
+                        <td>${entry.score}</td>
+                        <td>${new Date(entry.date).toLocaleString()}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            // Function to render pagination buttons
+            function renderPagination(data, rowsPerPage) {
+                const pagination = document.getElementById('pagination');
+                pagination.innerHTML = ''; // Clear existing buttons
+
+                const pageCount = Math.ceil(data.length / rowsPerPage);
+
+                for (let i = 1; i <= pageCount; i++) {
+                    const pageItem = document.createElement('li');
+                    pageItem.classList.add('page-item');
+                    if (i === currentPage) pageItem.classList.add('active');
+
+                    const pageLink = document.createElement('a');
+                    pageLink.classList.add('page-link');
+                    pageLink.textContent = i;
+                    pageLink.href = '#';
+                    pageLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        currentPage = i;
+                        renderTable(data, currentPage, rowsPerPage);
+                        renderPagination(data, rowsPerPage);
+                    });
+
+                    pageItem.appendChild(pageLink);
+                    pagination.appendChild(pageItem);
+                }
+            }
+
+            // Function to enable sorting
+            function enableSorting() {
+                const headers = document.querySelectorAll('thead th');
+                headers.forEach(header => {
+                    header.addEventListener('click', () => {
+                        const key = header.getAttribute('data-key');
+
+                        if (sortKey === key) {
+                            // Toggle direction if the same column is clicked
+                            sortDirection = sortDirection === "asc" ? "desc" : "asc";
+                        } else {
+                            sortKey = key; // Change sorting column
+                            sortDirection = "asc"; // Reset to ascending
+                        }
+
+                        // Perform sorting
+                        entries.sort((a, b) => {
+                            let aValue = a[key];
+                            let bValue = b[key];
+
+                            if (key === "date") {
+                                // Parse date for sorting
+                                aValue = new Date(aValue);
+                                bValue = new Date(bValue);
+                            } else if (key === "score") {
+                                // Parse numeric values
+                                aValue = parseFloat(aValue);
+                                bValue = parseFloat(bValue);
+                            }
+
+                            if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+                            if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
+                            return 0;
+                        });
+
+                        // Update table
+                        renderTable(entries, currentPage, rowsPerPage);
+                        renderPagination(entries, rowsPerPage);
+
+                        // Highlight sorted column
+                        headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+                        header.classList.add(sortDirection === "asc" ? 'sorted-asc' : 'sorted-desc');
+                    });
+                });
             }
         });
     </script>
