@@ -29,7 +29,7 @@ function displaySentiment(score, mood) {
     } else {
         // For cases where score is between -1 and 1, scale accordingly
         let position = ((score + 1) / 2) * 100;  // Normalize score to percentage
-        sentimentBar.style.background = `linear-gradient(to right, green ${position}%, white ${position}%, white)`;
+        sentimentBar.style.background = `linear-gradient(to right, green ${position}%, black ${position}%, black)`;
         sentimentFace.innerText = score > 0 ? '😊' : score < 0 ? '😞' : '😐';
     }
 }
