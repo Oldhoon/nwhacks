@@ -152,9 +152,9 @@ app.get('/get-entries', authenticateToken, async (req, res) => {
 //     }
 // });
 app.post('/submit-entry', authenticateToken, async (req, res) => {
-    const { title, entry } = req.body;
+    const { title, entry, score, mood } = req.body;
 
-    if (!title || !entry) {
+    if (!title || !entry || !score || !mood) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
 
@@ -163,46 +163,48 @@ app.post('/submit-entry', authenticateToken, async (req, res) => {
             userId: req.user.userId, // Assuming token authentication
             title,
             entry,
+            score,
+            mood,
             date: new Date(),
         });
 
         await newEntry.save();
         console.log('Journal entry saved:', newEntry);
 
-        res.redirect('/entry2.html'); // Redirect to the journal page after submission
+        res.redirect('/journal.html'); // Redirect to the journal page after submission
     } catch (err) {
         console.error('Error saving journal entry:', err);
         res.status(500).json({ message: 'Error saving journal entry.' });
     }
 });
 
-app.post('/submit-mood', authenticateToken, async (req, res) => {
-    const { mood, score } = req.body;
+// app.post('/submit-mood', authenticateToken, async (req, res) => {
+//     const { mood, score } = req.body;
 
-    if (!mood || score === undefined) {
-        return res.status(400).json({ message: 'Mood and score are required.' });
-    }
+//     if (!mood || score === undefined) {
+//         return res.status(400).json({ message: 'Mood and score are required.' });
+//     }
 
-    try {
-        // Save mood and score to the database
-        const newEntry = new Journal({
-            userId: req.user.userId, // Authenticated user ID
-            mood,
-            score,
-            date: new Date(), // Automatically add the current date
-        });
+//     try {
+//         // Save mood and score to the database
+//         const newEntry = new Journal({
+//             userId: req.user.userId, // Authenticated user ID
+//             mood,
+//             score,
+//             date: new Date(), // Automatically add the current date
+//         });
 
-        await newEntry.save(); // Save the new entry to MongoDB
+//         await newEntry.save(); // Save the new entry to MongoDB
 
-        console.log('Mood and score saved successfully:', newEntry);
+//         console.log('Mood and score saved successfully:', newEntry);
 
-        // Redirect to journal.html after saving
-        res.redirect('/journal.html');
-    } catch (err) {
-        console.error('Error saving mood and score:', err);
-        res.status(500).json({ message: 'Error saving mood and score.' });
-    }
-});
+//         // Redirect to journal.html after saving
+//         res.redirect('/journal.html');
+//     } catch (err) {
+//         console.error('Error saving mood and score:', err);
+//         res.status(500).json({ message: 'Error saving mood and score.' });
+//     }
+// });
 
 
 // Logout

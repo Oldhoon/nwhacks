@@ -58,3 +58,38 @@ if (journalText) {
         console.error('Error:', error);
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const hiddenScoreInput = document.getElementById('hidden-score');
+    const hiddenMoodInput = document.getElementById('hidden-mood');
+    const journalForm = document.getElementById('journal-form');
+
+    //set values of hidden inputs
+    hiddenScoreInput.value = score;
+    hiddenMoodInput.value = mood;
+
+    // Add an event listener to the form submit event
+    journalForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Update the hidden input values before submitting the form
+        hiddenScoreInput.value = document.getElementById('score').innerText;
+        hiddenMoodInput.value = document.getElementById('mood').innerText;
+
+        // Submit the form data using fetch
+        fetch(journalForm.action, {
+            method: journalForm.method,
+            body: new FormData(journalForm)
+        }).then(response => {
+            if (response.ok) {
+                // Redirect to the journal page after successful submission
+                window.location.href = 'journal.html';
+            } else {
+                alert('Error saving journal entry.');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Error saving journal entry.');
+        });
+    });
+});
