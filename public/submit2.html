@@ -10,6 +10,7 @@
 <body class="gradient-background">
     <div class="container text-center mt-5 content">
         <h1 class="text-dark mb-4"><span id="journal-title">Review Your Entry</span></h1>
+        <img class="gif" src="">
         <div class="position-relative p-4 bg-white rounded shadow-sm">
             <p class="journal-entry text-dark mt-3">Title: <span id="title"></span></p>
             <p class="journal-entry text-dark mt-3">Entry: <span id="entry"></span></p>
@@ -25,52 +26,57 @@
 
         <!-- Next Button -->
         <button id="next-button" class="btn btn-primary w-50 mt-4">Next</button>
+    </div>
 
     <script>
         // Parse the `entryId` from the query string
         const urlParams = new URLSearchParams(window.location.search);
         const entryId = urlParams.get('entryId');
 
-        // Sentiment face mapping based on mood score
-        function getSentimentFace(score) {
-            if (score >= 0.8) return '😄'; // Positive
-            if (score >= 0.4) return '🙂'; // Neutral/Positive
-            if (score >= -0.4) return '😐'; // Neutral
-            if (score >= -0.8) return '☹️'; // Neutral/Negative
-            return '😢'; // Negative
-        }
+        // Function to display sentiment and mood
+        function displaySentiment(score, mood) {
+            // Update the sentiment score and mood in the HTML
+            document.getElementById('score').innerText = score;
+            document.getElementById('mood').innerText = mood;
 
-        // Adjust sentiment bar width based on mood score
-        function adjustSentimentBar(score) {
-            const bar = document.getElementById('sentiment-bar');
-            const face = document.getElementById('sentiment-face');
+            // Set the sentiment bar color and face emoji based on the score
+            const sentimentBar = document.getElementById('sentiment-bar');
+            const sentimentFace = document.getElementById('sentiment-face');
 
-            const barWidth = Math.round((score + 1) * 50); // Convert score (-1 to 1) to percentage (0% to 100%)
-            bar.style.width = `${barWidth}%`;
-
-            face.textContent = getSentimentFace(score);
+            if (score === 1) {
+                sentimentBar.style.background = 'red';
+                sentimentFace.innerText = '😊'; // Happy face for score 1
+            } else if (score === 0) {
+                sentimentBar.style.background = 'yellow';
+                sentimentFace.innerText = '😐'; // Neutral face for score 0
+            } else if (score === -1) {
+                sentimentBar.style.background = 'green';
+                sentimentFace.innerText = '😞'; // Sad face for score -1
+            } else {
+                // For cases where score is between -1 and 1, scale accordingly
+                let position = ((score + 1) / 2) * 100; // Normalize score to percentage
+                sentimentBar.style.background = `linear-gradient(to right, green ${position}%, black ${position}%, black)`;
+                sentimentFace.innerText = score > 0 ? '😊' : score < 0 ? '😞' : '😐';
+            }
         }
 
         // Fetch the journal entry from the backend
         async function fetchEntry() {
-    try {
-        const response = await fetch(`/get-entry/${entryId}`);
-        if (!response.ok) throw new Error('Failed to fetch journal entry.');
+            try {
+                const response = await fetch(`/get-entry/${entryId}`);
+                if (!response.ok) throw new Error('Failed to fetch journal entry.');
 
-        const entry = await response.json();
-        document.getElementById('title').textContent = entry.title;
-        document.getElementById('entry').textContent = entry.entry;
-        document.getElementById('mood').textContent = entry.mood;
-        document.getElementById('score').textContent = entry.score;
+                const entry = await response.json();
+                document.getElementById('title').textContent = entry.title;
+                document.getElementById('entry').textContent = entry.entry;
 
-        // Adjust the sentiment bar based on the score
-        adjustSentimentBar(parseFloat(entry.score));
-    } catch (err) {
-        console.error(err.message);
-        alert('Error loading journal entry.');
-    }
-}
-
+                // Display the sentiment and mood using the new function
+                displaySentiment(parseFloat(entry.score), entry.mood);
+            } catch (err) {
+                console.error(err.message);
+                alert('Error loading journal entry.');
+            }
+        }
 
         // Redirect to `journal.html` on "Next"
         document.getElementById('next-button').addEventListener('click', () => {
